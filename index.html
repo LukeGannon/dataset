@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="container">
+    <nav class="navbar bg-info-subtle rounded mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Home</a>
+        <a class="navbar-brand" href="#">About</a>
+        <a class="navbar-brand" href="#">Graphs</a>
+        <a class="navbar-brand" href="#">Buttons</a>
+      </div>
+    </nav>
+    <main>
+      <header class="mb-4">
+        <h1 class="display-1">
+          Our Dataset Website On Video Game Sellings With Ratings.
+        </h1>
+        <p class="mb-2">
+          Dataset Overview 
+
+For this project, we used a video games dataset acquired from Kaggle. The dataset contains approximately up to 17000 rows varying from video games released between 1980 and 2016. Each row contains an individual video game, and includes details such as their name, developer, genre, and their global sales figures. 
+
+Furthermore, the dataset provides sales data for different regions, such as North America, Japan, Europe and other regions. In addition, it contains review related variables such as critic score, user score, critic count, and user count, which allows for a deep analysis of the relationship between a video game’s quality and its sales performance. 
+
+The dataset was chosen as it meets the project requirements by meeting over 200 rows and several numerical and categorical variables. It is also suitable for the machine learning section, as it provides an ample amount of data for training models. 
+
+Data Cleaning Summary 
+
+Before beginning the data analysis, the dataset had to be cleaned to improve data quality. A copy of the original dataset was made in excel and labelled raw_data to have the original data. Non-numerical values such as “tbd” in the user_score column and “N/A” in the year of release were replaced with blank slots. 
+
+The values in user_score were treated as missing data so that Excel could carry out its calculations correctly for the descriptive statisitics. Missing values in columns such as critic_score, were treated as genueine gaps in the data rather than errors. 
+        </p>
+      </header>
+      <section>
+        <h2>Global Sales Chart</h2>
+        <canvas id="chart1" height="80" aria-label="Game sales chart"></canvas>
+        <p>
+        <button id="random1" class="btn btn-primary btn-lg me-2">Randomize Data</button>
+        <button id="add1" class="btn btn-success btn-lg me-2">Add Point</button>
+        <button id="remove1" class="btn btn-danger btn-lg">Remove Point</button>
+        </p>
+      </section>
+            <section>
+        <h2>Japan Sales Chart</h2>
+        <canvas id="chart2" height="80" aria-label="Game sales chart"></canvas>
+        <p>
+          <button id="random2" class="btn btn-primary btn-lg me-2">Randomize Data</button>
+          <button id="add2" class="btn btn-success btn-lg me-2">Add Point</button>
+          <button id="remove2" class="btn btn-danger btn-lg">Remove Point</button>
+        </p>
+      </section>
+    </main>
+  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+  ></script>
+  <!-- Chart.js-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script>
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+async function loadCSV() {
+  const response = await fetch("VideoGameSales.csv");
+  const text = await response.text();
+
+  const rows = text.trim().split("\n").slice(1,101);
+  const labels = [];
+  const values = [];
+  const platforms=[];
+  const japansales=[];
+
+  rows.forEach(row => {
+  const cols = row.split(",");
+  const name = cols[0];
+  const sales = parseFloat(cols[9]); 
+  platforms.push(cols[1]);
+  japansales.push(parseFloat(cols[7]));
+
+  labels.push(name);
+  values.push(sales);
+  });
+
+  createChart(labels, values, platforms, japansales);
+}
+
+function createChart(labels, values, platforms, japansales) {
+  const ctx = document.getElementById("chart1").getContext("2d"); 
+  const chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Global Sales",
+        data: values,
+        borderWidth: 2,
+        tension: 0.25
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+ 
+  const ctx2 = document.getElementById("chart2").getContext("2d"); 
+  const barchart = new Chart(ctx2, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Japan sales",
+        data: japansales,
+        borderWidth: 2,
+        tension: 0.25
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  const [btnRandom, btnAdd, btnRemove] = document.querySelectorAll("button");
+document.getElementById("random1").addEventListener("click", () => {
+  chart.data.datasets[0].data =
+    chart.data.labels.map(() => randInt(1, 90));
+  chart.update();
+});
+
+document.getElementById("add1").addEventListener("click", () => {
+  chart.data.labels.push("New Game");
+  chart.data.datasets[0].data.push(randInt(1, 90));
+  chart.update();
+});
+
+document.getElementById("remove1").addEventListener("click", () => {
+  chart.data.labels.pop();
+  chart.data.datasets[0].data.pop();
+  chart.update();
+});
+document.getElementById("random2").addEventListener("click", () => {
+  barchart.data.datasets[0].data =
+    barchart.data.labels.map(() => randInt(1, 90));
+  barchart.update();
+});
+
+document.getElementById("add2").addEventListener("click", () => {
+  barchart.data.labels.push("New Platform");
+  barchart.data.datasets[0].data.push(randInt(1, 90));
+  barchart.update();
+});
+
+document.getElementById("remove2").addEventListener("click", () => {
+  barchart.data.labels.pop();
+  barchart.data.datasets[0].data.pop();
+  barchart.update();
+}); }
+loadCSV();
+</script>
+</html>
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
