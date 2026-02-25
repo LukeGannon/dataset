@@ -15,18 +15,19 @@
     <nav class="navbar bg-info-subtle rounded mb-4">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Home</a>
-        <a class="navbar-brand" href="#">About</a>
-        <a class="navbar-brand" href="#">Graphs</a>
-        <a class="navbar-brand" href="#">Buttons</a>
+        <a class="navbar-brand" href="#about">About</a>
+        <a class="navbar-brand" href="#graphs">Graphs</a>
+        <a class="navbar-brand" href="#buttons">Buttons</a>
       </div>
     </nav>
     <main>
-      <header class="mb-4">
+      <header id="about" class="mb-4">
         <h1 class="display-1">
           Our Dataset Website On Video Game Sellings With Ratings.
         </h1>
         <p class="mb-2">
-          Dataset Overview 
+
+          <h1>Dataset Overview</h1>
 
 For this project, we used a video games dataset acquired from Kaggle. The dataset contains approximately up to 17000 rows varying from video games released between 1980 and 2016. Each row contains an individual video game, and includes details such as their name, developer, genre, and their global sales figures. 
 
@@ -34,17 +35,45 @@ Furthermore, the dataset provides sales data for different regions, such as Nort
 
 The dataset was chosen as it meets the project requirements by meeting over 200 rows and several numerical and categorical variables. It is also suitable for the machine learning section, as it provides an ample amount of data for training models. 
 
-Data Cleaning Summary 
+<h1>Data Cleaning Summary</h1>
 
 Before beginning the data analysis, the dataset had to be cleaned to improve data quality. A copy of the original dataset was made in excel and labelled raw_data to have the original data. Non-numerical values such as “tbd” in the user_score column and “N/A” in the year of release were replaced with blank slots. 
 
 The values in user_score were treated as missing data so that Excel could carry out its calculations correctly for the descriptive statisitics. Missing values in columns such as critic_score, were treated as genueine gaps in the data rather than errors. 
-        </p>
+
+Descriptive Statistics Explanation
+Descriptive statistics were calculated for global sales, user score, and critic score to summarise the dataset. The statistics chosen helped provide an overview and general understanding of the dataset. 
+
+The mean shows the average value for each variable. For global sales, it shows us the typical sales figures across all games. However, remarkably high selling games can increase the mean and make it higher than what most games typically achieve. The median helps solve this by showing the middle value in the dataset, giving a clearer picture of a typical game’s sales performance. 
+
+The minimum and maximum values show the highest and lowest values recorded for each variable, helping display the wide range of results. The standard deviation measures how spread out the values are from the mean. A higher standard deviation demonstrates greater variation between games, while a lower value suggests a more consistent performance. 
+
+Overall, the statistics provide a summary of tendency and variability within the dataset. 
+
+<h1>Limitations and Ethics</h1>  
+
+While this dataset gives us a strong foundation for analysis, there are a good number of limitations that may affect the results. Firstly, the data can possibly only include games from a set period and not all time, meaning a lot of new titles and successes, along with some digital only releases are not represented, the presence of such well known and high selling games/franchises also skew averages and distort the overall picture of average sale performance.  
+ 
+From an ethical view, care must be taken when taking in user scores as they may be influenced by bias for that title or in rarer cases, review bombing rival companies' titles. Also using machine learning and Ai models to predict sales could put smaller indie devs at a disadvantage as they may bias popular genres/publishers.  
+
+<h1>Visual Analysis with Graphs</h1>
+The first chart in the document shows the distribution of global video game sales. Most games in the dataset have low sales, while only a small number of games sell very well. This creates a right skewed distribution, meaning that a few popular titles make up a large share of total sales. This shows how competitive the video game industry is, where only a limited number of games become major successes. 
+The second chart in the document looks at the relationship between critic scores and global sales. A scatter plot with a trendline was used to show this. The trendline shows a very weak positive relationship between critic score and sales. This means that higher critcic scores do not strongly lead to higher sales. The low R2 value confi rms that critic score alone is not a good predictor of how well a game will sell. Other factors such as marketing, brand popularity, and platform availability likely influence sales. 
+The final chart in the document compares the average global sales of games based on their ESRB rating. Games rated E and T have higher average sales thn games with more restrictive ratings. This suggest that games are more suitable for a wider audience generally sell better because they appeal to more players. 
+
+<h1>Conclusion </h1>
+In conclusion, this project successfully analyzed a large video game dataset to find patterns in sales and review data. Through statistics, we gained insight into the distribution and variability of sales, user and critical scores. The graph(s) showed that global sales were highly right-skewed, with only a small number of games achieving major success. The relationship between critic scores and sales suggests that quality alone does not determine performance, and that factors such as marketing, brand image and accessibility play important roles in a game's success.  
+
+ 
+
+The machine learning section further showed how data can be used to show predictive relationships, even if the accuracy is limited by missing values. Overall, the project shows how complex this industry really is and how data analysis can be applied to real-world datasets.  
+</p>
       </header>
-      <section>
+      <section id="graphs">
         <h2>Global Sales Chart</h2>
         <canvas id="chart1" height="80" aria-label="Game sales chart"></canvas>
         <p>
+          <section id="buttons">
         <button id="random1" class="btn btn-primary btn-lg me-2">Randomize Data</button>
         <button id="add1" class="btn btn-success btn-lg me-2">Add Point</button>
         <button id="remove1" class="btn btn-danger btn-lg">Remove Point</button>
@@ -54,121 +83,18 @@ The values in user_score were treated as missing data so that Excel could carry 
         <h2>Japan Sales Chart</h2>
         <canvas id="chart2" height="80" aria-label="Game sales chart"></canvas>
         <p>
+          <section id="buttons">
           <button id="random2" class="btn btn-primary btn-lg me-2">Randomize Data</button>
           <button id="add2" class="btn btn-success btn-lg me-2">Add Point</button>
           <button id="remove2" class="btn btn-danger btn-lg">Remove Point</button>
         </p>
       </section>
     </main>
-  </body>
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"
   ></script>
-  <!-- Chart.js-->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <script>
-function randInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-async function loadCSV() {
-  const response = await fetch("VideoGameSales.csv");
-  const text = await response.text();
-
-  const rows = text.trim().split("\n").slice(1,101);
-  const labels = [];
-  const values = [];
-  const platforms=[];
-  const japansales=[];
-
-  rows.forEach(row => {
-  const cols = row.split(",");
-  const name = cols[0];
-  const sales = parseFloat(cols[9]); 
-  platforms.push(cols[1]);
-  japansales.push(parseFloat(cols[7]));
-
-  labels.push(name);
-  values.push(sales);
-  });
-
-  createChart(labels, values, platforms, japansales);
-}
-
-function createChart(labels, values, platforms, japansales) {
-  const ctx = document.getElementById("chart1").getContext("2d"); 
-  const chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Global Sales",
-        data: values,
-        borderWidth: 2,
-        tension: 0.25
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } }
-    }
-  });
- 
-  const ctx2 = document.getElementById("chart2").getContext("2d"); 
-  const barchart = new Chart(ctx2, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Japan sales",
-        data: japansales,
-        borderWidth: 2,
-        tension: 0.25
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  const [btnRandom, btnAdd, btnRemove] = document.querySelectorAll("button");
-document.getElementById("random1").addEventListener("click", () => {
-  chart.data.datasets[0].data =
-    chart.data.labels.map(() => randInt(1, 90));
-  chart.update();
-});
-
-document.getElementById("add1").addEventListener("click", () => {
-  chart.data.labels.push("New Game");
-  chart.data.datasets[0].data.push(randInt(1, 90));
-  chart.update();
-});
-
-document.getElementById("remove1").addEventListener("click", () => {
-  chart.data.labels.pop();
-  chart.data.datasets[0].data.pop();
-  chart.update();
-});
-document.getElementById("random2").addEventListener("click", () => {
-  barchart.data.datasets[0].data =
-    barchart.data.labels.map(() => randInt(1, 90));
-  barchart.update();
-});
-
-document.getElementById("add2").addEventListener("click", () => {
-  barchart.data.labels.push("New Platform");
-  barchart.data.datasets[0].data.push(randInt(1, 90));
-  barchart.update();
-});
-
-document.getElementById("remove2").addEventListener("click", () => {
-  barchart.data.labels.pop();
-  barchart.data.datasets[0].data.pop();
-  barchart.update();
-}); }
-loadCSV();
-</script>
+<script src="chart.js"></script>
 </html>
